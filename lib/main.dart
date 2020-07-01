@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(title: 'RoboHorta'),
     );
   }
-
 }
 
 class MyHomePage extends StatefulWidget {
@@ -64,11 +63,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget moneyValues() {
-    return Row(
+  Widget firstCard() {
+    /*return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         FlatButton(
+          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
           child: RichText(
             text: TextSpan(
                 text: '28°',
@@ -108,6 +108,75 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )
       ],
+    );*/
+    return Center(
+      child: Card(
+        elevation: 5,
+        child:
+            Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Card(
+                    margin: new EdgeInsets.only(left: 30),
+                    elevation: 0,
+                    child: RichText(
+                      text: TextSpan(
+                          text: '28°',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
+                          children: [
+                            TextSpan(
+                                text: '\nTemperature',
+                                style: TextStyle(
+                                    color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
+                          ]),
+                    ),
+                  ),
+                  Card(
+                    margin: new EdgeInsets.only(right: 30, left: 30),
+                    elevation: 0,
+                    child: RichText(
+                      text: TextSpan(
+                          text: '80°',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
+                          children: [
+                            TextSpan(
+                                text: '\nHumidity',
+                                style: TextStyle(
+                                    color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
+                          ]),
+                    ),
+                  ),
+                  Card(
+                    elevation: 0,
+                    child: RichText(
+                      text: TextSpan(
+                          text: '4%',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
+                          children: [
+                            TextSpan(
+                                text: '\nSoil Moisture',
+                                style: TextStyle(
+                                    color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
+                          ]),
+                    ),
+                  ),
+                  //            ButtonBar(
+                  //              children: <Widget>[
+                  //                FlatButton(
+                  //                  child: const Text('UPDATE'),
+                  //                  onPressed: () {/* ... */},
+                  //                ),
+                  //              ],
+                  //            ),
+                ],
+              ),
+            ]),
+      ),
     );
   }
 
@@ -144,9 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            moneyValues()
-          ],
+          children: <Widget>[firstCard()],
         ),
       ),
       floatingActionButton: FloatingActionButton(
