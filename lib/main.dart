@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'get_data.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'RoboHorta'),
+      home: MyHomePage(title: 'RoboHorta Dashboard'),
     );
   }
 }
@@ -51,64 +52,48 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  var _result;
 
-  void _incrementCounter() {
-    setState(() {
+  @override
+  void initState() {
+    // This is the proper place to make the async calls
+    // This way they only get called once
+
+    // During development, if you change this code,
+    // you will need to do a full restart instead of just a hot reload
+
+    // You can't use async/await here,
+    // We can't mark this method as async because of the @override
+    _getData().then((result) {
+      // If we need to rebuild the widget with the resulting data,
+      // make sure to use `setState`
+      setState(() {
+        _result = result;
+      });
+    });
+  }
+
+  _incrementCounter() {
+    setState(() async {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
+
       _counter++;
     });
   }
 
-  Widget firstCard() {
-    /*return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        FlatButton(
-          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-          child: RichText(
-            text: TextSpan(
-                text: '28°',
-                style:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
-                children: [
-                  TextSpan(
-                      text: '\nTemperature',
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
-                ]),
-          ),
-        ),
-        FlatButton(
-          child: RichText(
-            text: TextSpan(
-                text: '80°',
-                style:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
-                children: [
-                  TextSpan(
-                      text: '\nHumidity',
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
-                ]),
-          ),
-        ),
-        FlatButton(
-          child: RichText(
-            text: TextSpan(
-                text: '4%',
-                style:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
-                children: [
-                  TextSpan(
-                      text: '\nSoil Moisture',
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
-                ]),
-          ),
-        )
-      ],
-    );*/
+  _getData() async {
+      var data = await getData();
+//      print(data);
+
+      return data;
+  }
+
+
+  Widget firstCard(temperature, air_humidity, soil_moisture) {
     return Center(
       child: Card(
         elevation: 5,
@@ -119,11 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 children: <Widget>[
                   Card(
-                    margin: new EdgeInsets.only(left: 30),
+                    margin: new EdgeInsets.only(left: 27),
                     elevation: 0,
                     child: RichText(
                       text: TextSpan(
-                          text: '28°',
+                          text: temperature,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
                           children: [
@@ -135,11 +120,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Card(
-                    margin: new EdgeInsets.only(right: 30, left: 30),
+                    margin: new EdgeInsets.only(right: 27, left: 27),
                     elevation: 0,
                     child: RichText(
                       text: TextSpan(
-                          text: '80°',
+                          text: air_humidity,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
                           children: [
@@ -154,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     elevation: 0,
                     child: RichText(
                       text: TextSpan(
-                          text: '4%',
+                          text: soil_moisture,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
                           children: [
@@ -182,6 +167,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var temperature = '0°';
+    var air_humidity = '0°';
+    var soil_moisture = '0%';
+
+    if (_result != null) {
+      temperature = _result[0].round().toString() + '°';
+      air_humidity = _result[1].round().toString() + '%';
+      soil_moisture = _result[2].round().toString() + '%';
+    }
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -213,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[firstCard()],
+          children: <Widget>[firstCard(temperature, air_humidity, soil_moisture)],
         ),
       ),
       floatingActionButton: FloatingActionButton(
