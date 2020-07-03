@@ -14,7 +14,11 @@ Future getData() async {
   await db.close();
   print('Connection Closed');
 
-  List<double> result = [information['temperature'][0]['degrees'], information['air_humidity'][0]['percent'], information['soil_moisture'][0]['percent']];
+  var temperature = information['temperature'][0]['degrees'] != null ? information['temperature'][0]['degrees'] : 0 as double;
+  var air_humidity = information['air_humidity'][0]['percent'] != null ? information['air_humidity'][0]['percent'] : 0 as double;
+  var soil_moisture = information['soil_moisture'][0]['percent'] != null ? information['soil_moisture'][0]['percent'] : 0 as double;
+
+  List<double> result = [temperature, air_humidity, soil_moisture];
 
 //  print(result);
 

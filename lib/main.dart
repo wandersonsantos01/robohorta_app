@@ -87,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _getData() async {
       var data = await getData();
+
 //      print(data);
 
       return data;
@@ -212,9 +213,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _getData,
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.update),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
