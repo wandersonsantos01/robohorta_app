@@ -2,8 +2,9 @@ import 'package:mongo_dart/mongo_dart.dart';
 //import 'dart:convert';
 
 Future getData() async {
-
   Db db = new Db("mongodb://192.168.0.20:27017/robohorta");
+//  Db db = new Db("mongodb://187.182.181.173:27999/robohorta");
+
   await db.open();
   await db.authenticate('robohorta', 'qwerty123456');
 
@@ -17,10 +18,23 @@ Future getData() async {
   var temperature = information['temperature'][0]['degrees'] != null ? information['temperature'][0]['degrees'] : 0 as double;
   var air_humidity = information['air_humidity'][0]['percent'] != null ? information['air_humidity'][0]['percent'] : 0 as double;
   var soil_moisture = information['soil_moisture'][0]['percent'] != null ? information['soil_moisture'][0]['percent'] : 0 as double;
+  var start = information['start'] != null ? information['start'] : DateTime.parse("1900-01-01 00:00:00Z");
 
-  List<double> result = [temperature, air_humidity, soil_moisture];
+  var result = new first_card_data();
+  result.temperature = temperature;
+  result.air_humidity = air_humidity;
+  result.soil_moisture = soil_moisture;
+  result.start = start;
+//  List<double> result = [temperature, air_humidity, soil_moisture];
 
 //  print(result);
 
   return result;
+}
+
+class first_card_data {
+  double temperature;
+  double air_humidity;
+  double soil_moisture;
+  DateTime start;
 }

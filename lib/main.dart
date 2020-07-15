@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'get_data.dart';
 
 void main() {
@@ -86,82 +87,67 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _getData() async {
-      var data = await getData();
+    var data = await getData();
 
-//      print(data);
+//      print(data.start);
 
-      return data;
+    return data;
   }
 
-
-  Widget firstCard(temperature, air_humidity, soil_moisture) {
+  Widget firstCard(temperature, air_humidity, soil_moisture, start) {
     return Center(
       child: Card(
         elevation: 5,
-        child:
-            Column(
-            mainAxisSize: MainAxisSize.min,
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+          Row(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Card(
-                    margin: new EdgeInsets.only(left: 27),
-                    elevation: 0,
-                    child: RichText(
-                      text: TextSpan(
-                          text: temperature,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
-                          children: [
-                            TextSpan(
-                                text: '\nTemperature',
-                                style: TextStyle(
-                                    color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
-                          ]),
-                    ),
-                  ),
-                  Card(
-                    margin: new EdgeInsets.only(right: 27, left: 27),
-                    elevation: 0,
-                    child: RichText(
-                      text: TextSpan(
-                          text: air_humidity,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
-                          children: [
-                            TextSpan(
-                                text: '\nHumidity',
-                                style: TextStyle(
-                                    color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
-                          ]),
-                    ),
-                  ),
-                  Card(
-                    elevation: 0,
-                    child: RichText(
-                      text: TextSpan(
-                          text: soil_moisture,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
-                          children: [
-                            TextSpan(
-                                text: '\nSoil Moisture',
-                                style: TextStyle(
-                                    color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))
-                          ]),
-                    ),
-                  ),
-                  //            ButtonBar(
-                  //              children: <Widget>[
-                  //                FlatButton(
-                  //                  child: const Text('UPDATE'),
-                  //                  onPressed: () {/* ... */},
-                  //                ),
-                  //              ],
-                  //            ),
-                ],
+              Card(
+                margin: new EdgeInsets.only(left: 27),
+                elevation: 0,
+                child: RichText(
+                  text: TextSpan(
+                      text: temperature,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
+                      children: [TextSpan(text: '\nTemperature', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                ),
               ),
-            ]),
+              Card(
+                margin: new EdgeInsets.only(right: 27, left: 27),
+                elevation: 0,
+                child: RichText(
+                  text: TextSpan(
+                      text: air_humidity,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
+                      children: [TextSpan(text: '\nHumidity', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                ),
+              ),
+              Card(
+                elevation: 0,
+                child: RichText(
+                  text: TextSpan(
+                      text: soil_moisture,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
+                      children: [TextSpan(text: '\nSoil Moisture', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                ),
+              ),
+            ],
+          ),
+          Row(children: <Widget>[
+            Expanded(
+              child: Card(
+                margin: new EdgeInsets.only(right: 24, bottom: 10, top: 7),
+                elevation: 0,
+                child: RichText(
+                  textAlign: TextAlign.right,
+                  text: TextSpan(
+                    text: start,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 12),
+                  ),
+                ),
+              ),
+            )
+          ]),
+        ]),
       ),
     );
   }
@@ -171,11 +157,18 @@ class _MyHomePageState extends State<MyHomePage> {
     var temperature = '0°';
     var air_humidity = '0°';
     var soil_moisture = '0%';
+    var start = "21/01/1900 00:00:00";
 
     if (_result != null) {
-      temperature = _result[0].round().toString() + '°';
-      air_humidity = _result[1].round().toString() + '%';
-      soil_moisture = _result[2].round().toString() + '%';
+      temperature = _result.temperature.round().toString() + '°';
+      air_humidity = _result.air_humidity.round().toString() + '%';
+      soil_moisture = _result.soil_moisture.round().toString() + '%';
+
+      DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
+      String start_aux = formatter.format(_result.start);
+      start = "$start_aux";
+
+      print(_result.start);
     }
 
     // This method is rerun every time setState is called, for instance as done
@@ -209,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[firstCard(temperature, air_humidity, soil_moisture)],
+          children: <Widget>[firstCard(temperature, air_humidity, soil_moisture, start)],
         ),
       ),
       floatingActionButton: FloatingActionButton(
