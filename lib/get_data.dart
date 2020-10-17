@@ -2,8 +2,9 @@ import 'package:mongo_dart/mongo_dart.dart';
 //import 'dart:convert';
 
 Future getData() async {
-  Db db = new Db("mongodb://192.168.0.20:27017/robohorta");
-//  Db db = new Db("mongodb://187.182.181.173:27999/robohorta");
+  Db db = new Db("mongodb://rsfh01.ddns.net:27999/robohorta"); // DDNS
+//  Db db = new Db("mongodb://192.168.0.20:27017/robohorta"); // LOCAL
+//  Db db = new Db("mongodb://187.182.181.173:27999/robohorta"); // IP EXTERNO
 
   await db.open();
   await db.authenticate('robohorta', 'qwerty123456');
