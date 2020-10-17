@@ -14,5 +14,5 @@ Robohorta App
 ```shell
 $ flutter clean
 $ flutter build apk --split-per-abi
-$ Run flutter install.
+$ flutter install.
 ```
