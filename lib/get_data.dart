@@ -16,9 +16,9 @@ Future getData() async {
   await db.close();
   print('Connection Closed');
 
-  var temperature = information['temperature'][0]['degrees'] != null ? information['temperature'][0]['degrees'] : 0 as double;
-  var air_humidity = information['air_humidity'][0]['percent'] != null ? information['air_humidity'][0]['percent'] : 0 as double;
-  var soil_moisture = information['soil_moisture'][0]['percent'] != null ? information['soil_moisture'][0]['percent'] : 0 as double;
+  var temperature = information['temperature']['degrees'] != null ? information['temperature']['degrees'] : 0 as double;
+  var air_humidity = information['air_humidity']['percent'] != null ? information['air_humidity']['percent'] : 0 as double;
+  var soil_moisture = information['soil_moisture']['percent'] != null ? information['soil_moisture']['percent'] : 0 as double;
   var start = information['start'] != null ? information['start'] : DateTime.parse("1900-01-01 00:00:00Z");
 
   var result = new first_card_data();
