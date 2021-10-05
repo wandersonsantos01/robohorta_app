@@ -1,13 +1,16 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 //import 'dart:convert';
 
 Future getData() async {
-  Db db = new Db("mongodb://rsfh01.ddns.net:27999/robohorta"); // DDNS
+  // Db db = new Db("mongodb://rsfh01.ddns.net:27999/robohorta"); // DDNS
 //  Db db = new Db("mongodb://192.168.0.20:27017/robohorta"); // LOCAL
 //  Db db = new Db("mongodb://187.182.181.173:27999/robohorta"); // IP EXTERNO
 
+  // var db = await Db.create("mongodb+srv://" + dotenv.env['username'] + ":" + dotenv.env['password'] + "@" + dotenv.env['host'] + ":" + dotenv.env['port'] + "/" + dotenv.env['database'] + "?<parameters>");
+  var db = await Db.create("mongodb+srv://" + dotenv.env['username'] + ":" + dotenv.env['password'] + "@" + dotenv.env['host'] + ":" + dotenv.env['port'] + "/" + dotenv.env['database']);
   await db.open();
-  await db.authenticate('robohorta', 'qwerty123456');
+  // await db.authenticate(dotenv.env['username'], dotenv.env['password']);
 
   print('Connected to database');
 

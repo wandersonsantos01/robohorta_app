@@ -1,8 +1,10 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'get_data.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
@@ -206,8 +208,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _getData,
-        tooltip: 'Increment',
+        onPressed: initState,
+        tooltip: 'Update',
         child: Icon(Icons.update),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
