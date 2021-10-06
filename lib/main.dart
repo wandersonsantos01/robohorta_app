@@ -73,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _result = result;
       });
+      Navigator.of(context, rootNavigator: true).pop('dialog');
     });
   }
 
@@ -89,88 +90,243 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _getData() async {
+    setLoading();
     var data = await getData();
-
-//      print(data.start);
-
     return data;
   }
 
-  Widget firstCard(temperature, air_humidity, soil_moisture, start) {
-    return Center(
-      child: Card(
-        elevation: 5,
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Row(
+  void setLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: new Stack(
             children: <Widget>[
-              Card(
-                margin: new EdgeInsets.only(left: 27),
-                elevation: 0,
-                child: RichText(
-                  text: TextSpan(
-                      text: temperature,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
-                      children: [TextSpan(text: '\nTemperature', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
-                ),
-              ),
-              Card(
-                margin: new EdgeInsets.only(right: 27, left: 27),
-                elevation: 0,
-                child: RichText(
-                  text: TextSpan(
-                      text: air_humidity,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
-                      children: [TextSpan(text: '\nHumidity', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
-                ),
-              ),
-              Card(
-                elevation: 0,
-                child: RichText(
-                  text: TextSpan(
-                      text: soil_moisture,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
-                      children: [TextSpan(text: '\nSoil Moisture', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
-                ),
-              ),
-            ],
-          ),
-          Row(children: <Widget>[
-            Expanded(
-              child: Card(
-                margin: new EdgeInsets.only(right: 24, bottom: 10, top: 7),
-                elevation: 0,
-                child: RichText(
-                  textAlign: TextAlign.right,
-                  text: TextSpan(
-                    text: start,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 12),
+              new Container(
+                  decoration: new BoxDecoration(
+                      color: Colors.green,
+                      // borderRadius: new BorderRadius.circular(10.0)
+                  ),
+                  width: 300.0,
+                  height: 200.0,
+                  alignment: AlignmentDirectional.center,
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Center(
+                        child: new SizedBox(
+                          height: 50.0,
+                          width: 50.0,
+                          child: new CircularProgressIndicator(
+                            value: null,
+                            strokeWidth: 7.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      new Container(
+                        margin: const EdgeInsets.only(top: 25.0),
+                        child: new Center(
+                          child: new Text(
+                            "Loading ...",
+                            style: new TextStyle(
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            )
-          ]),
-        ]),
-      ),
+            ],
+          ),
+        );
+      },
+    );
+    // new Future.delayed(new Duration(seconds: 3), () {
+    //   Navigator.pop(context); //pop dialog
+    //   initState();
+    // });
+  }
+
+  Widget firstCard(
+      last_reading_temperature,
+      last_reading_air_humidity,
+      last_reading_soil_moisture,
+      last_reading_start,
+      last_irrigation_temperature,
+      last_irrigation_air_humidity,
+      last_irrigation_soil_moisture,
+      last_irrigation_start
+      ) {
+    return Center(
+      child:
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Card(
+            elevation: 5,
+            margin: new EdgeInsets.only(top: 12, right: 5, left: 5),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: Card(
+                        margin: new EdgeInsets.only(top: 7, right: 24, left: 10),
+                        elevation: 0,
+                        child: RichText(
+                          // textAlign: TextAlign.left,
+                          text: TextSpan(
+                            text: 'Last reading',
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    )
+                  ]),
+                  Row(
+                    children: <Widget>[
+                      Card(
+                        margin: new EdgeInsets.only(left: 27),
+                        elevation: 0,
+                        child: RichText(
+                          text: TextSpan(
+                              text: last_reading_temperature,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
+                              children: [TextSpan(text: '\nTemperature', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                        ),
+                      ),
+                      Card(
+                        margin: new EdgeInsets.only(right: 27, left: 27),
+                        elevation: 0,
+                        child: RichText(
+                          text: TextSpan(
+                              text: last_reading_air_humidity,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
+                              children: [TextSpan(text: '\nHumidity', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                        ),
+                      ),
+                      Card(
+                        elevation: 0,
+                        child: RichText(
+                          text: TextSpan(
+                              text: last_reading_soil_moisture,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
+                              children: [TextSpan(text: '\nSoil Moisture', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: Card(
+                        margin: new EdgeInsets.only(right: 24, bottom: 10, top: 7),
+                        elevation: 0,
+                        child: RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            text: last_reading_start,
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45, fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    )
+                  ]),
+            ]),
+          ),
+          Card(
+            elevation: 5,
+            margin: new EdgeInsets.only(top: 20, right: 5, left: 5),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: Card(
+                        margin: new EdgeInsets.only(right: 24, top: 7, left: 10),
+                        elevation: 0,
+                        child: RichText(
+                          // textAlign: TextAlign.left,
+                          text: TextSpan(
+                            text: 'Last irrigation - ' + last_irrigation_start,
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    )
+                  ]),
+                  Row(
+                    children: <Widget>[
+                      Card(
+                        margin: new EdgeInsets.only(left: 27),
+                        elevation: 0,
+                        child: RichText(
+                          text: TextSpan(
+                              text: last_irrigation_temperature,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 52),
+                              children: [TextSpan(text: '\nTemperature', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                        ),
+                      ),
+                      Card(
+                        margin: new EdgeInsets.only(right: 27, left: 27),
+                        elevation: 0,
+                        child: RichText(
+                          text: TextSpan(
+                              text: last_irrigation_air_humidity,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 52),
+                              children: [TextSpan(text: '\nHumidity', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                        ),
+                      ),
+                      Card(
+                        elevation: 0,
+                        child: RichText(
+                          text: TextSpan(
+                              text: last_irrigation_soil_moisture,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 52),
+                              children: [TextSpan(text: '\nSoil Moisture', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 10))]),
+                        ),
+                      ),
+                    ],
+                  )
+            ]),
+          ),
+        ]
+      )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    var temperature = '0°';
-    var air_humidity = '0°';
-    var soil_moisture = '0%';
-    var start = "21/01/1900 00:00:00";
+    var last_reading_temperature, last_irrigation_temperature = '0°';
+    var last_reading_air_humidity, last_irrigation_air_humidity = '0°';
+    var last_reading_soil_moisture, last_irrigation_soil_moisture = '0%';
+    var last_reading_start, last_irrigation_start = "21/01/1900 00:00:00";
 
     if (_result != null) {
-      temperature = _result.temperature.round().toString() + '°';
-      air_humidity = _result.air_humidity.round().toString() + '%';
-      soil_moisture = _result.soil_moisture.round().toString() + '%';
+      last_reading_temperature = _result.last_reading_temperature.round().toString() + '°';
+      last_reading_air_humidity = _result.last_reading_air_humidity.round().toString() + '%';
+      last_reading_soil_moisture = _result.last_reading_soil_moisture.round().toString() + '%';
 
-      DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
-      String start_aux = formatter.format(_result.start);
-      start = "$start_aux";
+      // @ATENÇÃO: CRIAR FUNÇÃO PARA FORMATAR DATA
+      DateFormat last_reading_formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
+      String last_reading_start_aux = last_reading_formatter.format(_result.last_reading_start);
+      last_reading_start = "$last_reading_start_aux";
 
-      print(_result.start);
+      print(_result.last_reading_start);
+
+      last_irrigation_temperature = _result.last_irrigation_temperature.round().toString() + '°';
+      last_irrigation_air_humidity = _result.last_irrigation_air_humidity.round().toString() + '%';
+      last_irrigation_soil_moisture = _result.last_irrigation_soil_moisture.round().toString() + '%';
+
+      // @ATENÇÃO: CRIAR FUNÇÃO PARA FORMATAR DATA
+      DateFormat last_irrigation_formatter = DateFormat('dd/MM HH:mm');
+      String last_irrigation_start_aux = last_irrigation_formatter.format(_result.last_irrigation_start);
+      last_irrigation_start = "$last_irrigation_start_aux";
+
+      print(_result.last_irrigation_start);
     }
 
     // This method is rerun every time setState is called, for instance as done
@@ -203,8 +359,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[firstCard(temperature, air_humidity, soil_moisture, start)],
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[firstCard(
+              last_reading_temperature,
+              last_reading_air_humidity,
+              last_reading_soil_moisture,
+              last_reading_start,
+              last_irrigation_temperature,
+              last_irrigation_air_humidity,
+              last_irrigation_soil_moisture,
+              last_irrigation_start
+          )],
         ),
       ),
       floatingActionButton: FloatingActionButton(
