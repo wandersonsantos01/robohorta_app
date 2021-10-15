@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future getData() async {
   var lastReading = null;
@@ -33,45 +35,54 @@ Future getData() async {
 
     result.SetFirstCardData(lastReading, lastIrrigation);
   } else if (dotenv.env['get_data_on'] == 'api') {
-    var headers = {
-      'tk': dotenv.env['api_token']
-    };
+    try {
+      var headers = {
+        'tk': dotenv.env['api_token']
+      };
 
-    // LAST READING
-    var url = dotenv.env['api_url'] + dotenv.env['api_events_uri'] + "/SMALL BREAK";
-    var requestLastReading = http.Request('GET', Uri.parse(url));
+      // LAST READING
+      var url = dotenv.env['api_url'] + dotenv.env['api_events_uri'] +
+          "/SMALL BREAK";
+      var requestLastReading = http.Request('GET', Uri.parse(url));
 
-    requestLastReading.headers.addAll(headers);
+      requestLastReading.headers.addAll(headers);
 
-    http.StreamedResponse responseLastReading = await requestLastReading.send();
+      http.StreamedResponse responseLastReading = await requestLastReading
+          .send();
 
-    if (responseLastReading.statusCode == 200) {
-      var lastReadingResponse = await responseLastReading.stream.bytesToString();
-      lastReading = json.decode(lastReadingResponse)['Items'][0];
+      if (responseLastReading.statusCode == 200) {
+        var lastReadingResponse = await responseLastReading.stream
+            .bytesToString();
+        lastReading = json.decode(lastReadingResponse)['Items'][0];
+      }
+      else {
+        print(responseLastReading.reasonPhrase);
+      }
+
+      // LAST IRRIGATION
+      url = dotenv.env['api_url'] + dotenv.env['api_events_uri'] + "/IRRIGATED";
+      var requestLastIrrigation = http.Request('GET', Uri.parse(url));
+
+      requestLastIrrigation.headers.addAll(headers);
+
+      http.StreamedResponse responseLastIrrigation = await requestLastIrrigation
+          .send();
+
+      if (responseLastIrrigation.statusCode == 200) {
+        var lastIrrigationResponse = await responseLastIrrigation.stream
+            .bytesToString();
+        lastIrrigation = json.decode(lastIrrigationResponse)['Items'][0];
+      }
+      else {
+        print(responseLastIrrigation.reasonPhrase);
+      }
+      result.SetFirstCardData(lastReading, lastIrrigation);
+    } on SocketException {
+      // print('SocketException');
+      result.SetFirstCardData({}, {});
+    } on Error catch (e) {
+      // print('Error: $e');
     }
-    else {
-      print(responseLastReading.reasonPhrase);
-    }
-
-    // LAST IRRIGATION
-    url = dotenv.env['api_url'] + dotenv.env['api_events_uri'] + "/IRRIGATED";
-    var requestLastIrrigation = http.Request('GET', Uri.parse(url));
-
-    requestLastIrrigation.headers.addAll(headers);
-
-    http.StreamedResponse responseLastIrrigation = await requestLastIrrigation.send();
-
-    if (responseLastIrrigation.statusCode == 200) {
-      var lastIrrigationResponse = await responseLastIrrigation.stream.bytesToString();
-      lastIrrigation = json.decode(lastIrrigationResponse)['Items'][0];
-    }
-    else {
-      print(responseLastIrrigation.reasonPhrase);
-    }
-
-    print(lastReading);
-    print(lastIrrigation);
-    result.SetFirstCardData(lastReading, lastIrrigation);
   }
 
   return result;
@@ -88,49 +99,54 @@ class first_card_data {
   double last_irrigation_soil_moisture = 0;
   DateTime last_irrigation_start = DateTime.parse("1900-01-01 00:00:00Z");
 
-  SetFirstCardData(lastReading, lastIrrigation) {
-    if (lastReading != null || lastIrrigation != null) {
-      var lastReadingTemperature = lastReading['temperature']['degrees'] != null
-          ? lastReading['temperature']['degrees']
-          : 0 as double;
-      var lastReadingAirHumidity =
-          lastReading['air_humidity']['percent'] != null
-              ? lastReading['air_humidity']['percent'].toDouble()
-              : 0 as double;
-      var lastReadingSoilMoisture =
-          lastReading['soil_moisture']['percent'] != null
-              ? lastReading['soil_moisture']['percent'].toDouble()
-              : 0 as double;
-      var lastReadingStart = lastReading['start'] != null
-          ? DateTime.parse(lastReading['start'])
-          : DateTime.parse("1900-01-01 00:00:00Z");
+  SetFirstCardData(lastReading, lastIrrigation) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      this.last_reading_temperature = lastReadingTemperature;
-      this.last_reading_air_humidity = lastReadingAirHumidity;
-      this.last_reading_soil_moisture = lastReadingSoilMoisture;
-      this.last_reading_start = lastReadingStart;
+    var lastReadingTemperature = lastReading['temperature'] != null
+        ? lastReading['temperature']['degrees']
+        : prefs.getDouble('lastReadingTemperature');
+    var lastReadingAirHumidity = lastReading['air_humidity'] != null
+        ? lastReading['air_humidity']['percent']
+        : prefs.getDouble('lastReadingAirHumidity');
+    var lastReadingSoilMoisture = lastReading['soil_moisture'] != null
+        ? lastReading['soil_moisture']['percent']
+        : prefs.getDouble('lastReadingSoilMoisture');
+    var lastReadingStart = lastReading['start'] != null
+        ? DateTime.parse(lastReading['start'])
+        : DateTime.parse(prefs.getString('lastReadingStart'));
 
-      var lastIrrigationTemperature =
-          lastIrrigation['temperature']['degrees'] != null
-              ? lastIrrigation['temperature']['degrees']
-              : 0 as double;
-      var lastIrrigationAirHumidity =
-          lastIrrigation['air_humidity']['percent'] != null
-              ? lastIrrigation['air_humidity']['percent'].toDouble()
-              : 0 as double;
-      var lastIrrigationSoilMoisture =
-          lastIrrigation['soil_moisture']['percent'] != null
-              ? lastIrrigation['soil_moisture']['percent'].toDouble()
-              : 0 as double;
-      var lastIrrigationStart = lastIrrigation['start'] != null
-          ? DateTime.parse(lastIrrigation['start'])
-          : DateTime.parse("1900-01-01 00:00:00Z");
+    this.last_reading_temperature = lastReadingTemperature.toDouble();
+    this.last_reading_air_humidity = lastReadingAirHumidity.toDouble();
+    this.last_reading_soil_moisture = lastReadingSoilMoisture.toDouble();
+    this.last_reading_start = lastReadingStart;
 
-      this.last_irrigation_temperature = lastIrrigationTemperature;
-      this.last_irrigation_air_humidity = lastIrrigationAirHumidity;
-      this.last_irrigation_soil_moisture = lastIrrigationSoilMoisture;
-      this.last_irrigation_start = lastIrrigationStart;
-    }
+    prefs.setDouble('lastReadingTemperature', lastReadingTemperature);
+    prefs.setDouble('lastReadingAirHumidity', lastReadingAirHumidity);
+    prefs.setDouble('lastReadingSoilMoisture', lastReadingSoilMoisture);
+    prefs.setString('lastReadingStart', lastReadingStart.toString());
+
+    var lastIrrigationTemperature = lastIrrigation['temperature'] != null
+        ? lastIrrigation['temperature']['degrees']
+        : prefs.getDouble('lastIrrigationTemperature');
+    var lastIrrigationAirHumidity = lastIrrigation['air_humidity'] != null
+        ? lastIrrigation['air_humidity']['percent']
+        : prefs.getDouble('lastIrrigationAirHumidity');
+    var lastIrrigationSoilMoisture = lastIrrigation['soil_moisture'] != null
+        ? lastIrrigation['soil_moisture']['percent']
+        : prefs.getDouble('lastIrrigationSoilMoisture');
+    var lastIrrigationStart = lastIrrigation['start'] != null
+        ? DateTime.parse(lastIrrigation['start'])
+        : DateTime.parse(prefs.getString('lastIrrigationStart'));
+
+    this.last_irrigation_temperature = lastIrrigationTemperature.toDouble();
+    this.last_irrigation_air_humidity = lastIrrigationAirHumidity.toDouble();
+    this.last_irrigation_soil_moisture = lastIrrigationSoilMoisture.toDouble();
+    this.last_irrigation_start = lastIrrigationStart;
+
+    prefs.setDouble('lastIrrigationTemperature', lastIrrigationTemperature);
+    prefs.setDouble('lastIrrigationAirHumidity', lastIrrigationAirHumidity);
+    prefs.setDouble('lastIrrigationSoilMoisture', lastIrrigationSoilMoisture);
+    prefs.setString('lastIrrigationStart', lastIrrigationStart.toString());
 
     return this;
   }

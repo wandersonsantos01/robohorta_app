@@ -315,8 +315,6 @@ class _MyHomePageState extends State<MyHomePage> {
       String last_reading_start_aux = last_reading_formatter.format(_result.last_reading_start);
       last_reading_start = "$last_reading_start_aux";
 
-      print(_result.last_reading_start);
-
       last_irrigation_temperature = _result.last_irrigation_temperature.round().toString() + '°';
       last_irrigation_air_humidity = _result.last_irrigation_air_humidity.round().toString() + '%';
       last_irrigation_soil_moisture = _result.last_irrigation_soil_moisture.round().toString() + '%';
@@ -325,8 +323,6 @@ class _MyHomePageState extends State<MyHomePage> {
       DateFormat last_irrigation_formatter = DateFormat('dd/MM HH:mm');
       String last_irrigation_start_aux = last_irrigation_formatter.format(_result.last_irrigation_start);
       last_irrigation_start = "$last_irrigation_start_aux";
-
-      print(_result.last_irrigation_start);
     }
 
     // This method is rerun every time setState is called, for instance as done

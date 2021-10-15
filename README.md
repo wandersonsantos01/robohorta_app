@@ -17,6 +17,16 @@ $ flutter build apk --split-per-abi
 $ flutter install
 ```
 
+## Update package - Install new dependencies
+
+When you change pubspec.yml file, you need to get new dependencies, so follow next steps.
+
+1- Navigate to project folder.
+2- Run:
+```shell
+$ flutter pub get
+```
+
 If you have problems to run flutter build command, maybe you should upgrade your flutter running:
 ```shell
 $ flutter upgrade

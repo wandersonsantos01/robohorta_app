@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   mongo_dart: "^0.4.0"
   flutter_dotenv: "^5.0.0"
+  shared_preferences: "^2.0.8"
   intl:
 
 
