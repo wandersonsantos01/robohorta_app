@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -293,6 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
             ]),
           ),
+          const _Dashboard(),
         ]
       )
     );
@@ -373,6 +374,102 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Update',
         child: Icon(Icons.update),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class _Dashboard extends StatelessWidget {
+  const _Dashboard();
+
+  String get last_irrigation_start => '';
+  String get last_irrigation_temperature => '';
+  String get last_irrigation_air_humidity => '';
+  String get last_irrigation_soil_moisture => '';
+
+  /**
+   * @CONTINUAR:
+   *  - CRIAR FUNÇÃO PARA RETORNAR COMPONENTE COM DADOS DA API
+   *  - CRIAR LAÇO DE REPETIÇÃO COM DADOS RETORNADOS
+   */
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      margin: new EdgeInsets.only(top: 20, right: 5, left: 5),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(children: <Widget>[
+              Expanded(
+                child: Card(
+                  margin: new EdgeInsets.only(right: 24, top: 7, left: 10),
+                  elevation: 0,
+                  child: RichText(
+// textAlign: TextAlign.left,
+                    text: TextSpan(
+                      text: 'Last irrigation - ' + last_irrigation_start,
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                          fontSize: 18),
+                    ),
+                  ),
+                ),
+              )
+            ]),
+            Row(
+              children: <Widget>[
+                Card(
+                  margin: new EdgeInsets.only(left: 27),
+                  elevation: 0,
+                  child: RichText(
+                    text: TextSpan(
+                        text: last_irrigation_temperature,
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                            fontSize: 52),
+                        children: [
+                          TextSpan(text: '\nTemperature',
+                              style: TextStyle(color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10))
+                        ]),
+                  ),
+                ),
+                Card(
+                  margin: new EdgeInsets.only(right: 27, left: 27),
+                  elevation: 0,
+                  child: RichText(
+                    text: TextSpan(
+                        text: last_irrigation_air_humidity,
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                            fontSize: 52),
+                        children: [
+                          TextSpan(text: '\nHumidity',
+                              style: TextStyle(color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10))
+                        ]),
+                  ),
+                ),
+                Card(
+                  elevation: 0,
+                  child: RichText(
+                    text: TextSpan(
+                        text: last_irrigation_soil_moisture,
+                        style: TextStyle(fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                            fontSize: 52),
+                        children: [
+                          TextSpan(text: '\nSoil Moisture',
+                              style: TextStyle(color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10))
+                        ]),
+                  ),
+                ),
+              ],
+            )
+          ]),
     );
   }
 }

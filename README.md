@@ -17,6 +17,24 @@ $ flutter build apk --split-per-abi
 $ flutter install
 ```
 
+## Build Web App
+
+To build a web app based on Flutter project, run:
+
+```shell
+$ flutter build web --no-sound-null-safety
+```
+
+Then, you will need to start a simple server to check the build above (you will need Python to be installed). Run:
+
+```shell
+$ python -m http.server 8000
+```
+
+Then you can access http://localhost:8000 on you browser and check the result.
+
+If you want to commit to GitHub Pages, you need to change .env file name, removing "." and/or renaming the file.
+
 ## Update package - Install new dependencies
 
 When you change pubspec.yml file, you need to get new dependencies, so follow next steps.
