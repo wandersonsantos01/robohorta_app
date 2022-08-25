@@ -17,9 +17,9 @@ Future getData() async {
 //  Db db = new Db("mongodb://187.182.181.173:27999/robohorta"); // IP EXTERNO
 
     // var db = await Db.create("mongodb+srv://" + dotenv.env['username'] + ":" + dotenv.env['password'] + "@" + dotenv.env['host'] + ":" + dotenv.env['port'] + "/" + dotenv.env['database'] + "?<parameters>");
-    var db = await Db.create("mongodb+srv://" + dotenv.env['username'] + ":" +
-        dotenv.env['password'] + "@" + dotenv.env['host'] + ":" +
-        dotenv.env['port'] + "/" + dotenv.env['database']);
+    var db = await Db.create("mongodb+srv://" + dotenv.env['username']! + ":" +
+        dotenv.env['password']! + "@" + dotenv.env['host']! + ":" +
+        dotenv.env['port']! + "/" + dotenv.env['database']!);
     await db.open();
     // await db.authenticate(dotenv.env['username'], dotenv.env['password']);
 
@@ -41,7 +41,7 @@ Future getData() async {
       };
 
       // LAST READING
-      var url = dotenv.env['api_url'] + dotenv.env['api_events_uri'] +
+      var url = dotenv.env['api_url']! + dotenv.env['api_events_uri']! +
           "/SMALL BREAK";
       var requestLastReading = http.Request('GET', Uri.parse(url));
 
@@ -60,7 +60,7 @@ Future getData() async {
       }
 
       // LAST IRRIGATION
-      url = dotenv.env['api_url'] + dotenv.env['api_events_uri'] + "/IRRIGATED";
+      url = dotenv.env['api_url']! + dotenv.env['api_events_uri']! + "/IRRIGATED";
       var requestLastIrrigation = http.Request('GET', Uri.parse(url));
 
       requestLastIrrigation.headers.addAll(headers);
@@ -113,7 +113,7 @@ class first_card_data {
         : prefs.getDouble('lastReadingSoilMoisture');
     var lastReadingStart = lastReading['start'] != null
         ? DateTime.parse(lastReading['start'])
-        : DateTime.parse(prefs.getString('lastReadingStart'));
+        : DateTime.parse(prefs.getString('lastReadingStart')!);
 
     this.last_reading_temperature = lastReadingTemperature.toDouble();
     this.last_reading_air_humidity = lastReadingAirHumidity.toDouble();
@@ -136,7 +136,7 @@ class first_card_data {
         : prefs.getDouble('lastIrrigationSoilMoisture');
     var lastIrrigationStart = lastIrrigation['start'] != null
         ? DateTime.parse(lastIrrigation['start'])
-        : DateTime.parse(prefs.getString('lastIrrigationStart'));
+        : DateTime.parse(prefs.getString('lastIrrigationStart')!);
 
     this.last_irrigation_temperature = lastIrrigationTemperature.toDouble();
     this.last_irrigation_air_humidity = lastIrrigationAirHumidity.toDouble();
