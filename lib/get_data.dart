@@ -102,6 +102,16 @@ class first_card_data {
   SetFirstCardData(lastReading, lastIrrigation) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    prefs.setDouble('lastReadingTemperature', this.last_reading_temperature);
+    prefs.setDouble('lastReadingAirHumidity', this.last_irrigation_air_humidity);
+    prefs.setDouble('lastReadingSoilMoisture', this.last_irrigation_soil_moisture);
+    prefs.setString('lastReadingStart', this.last_reading_start.toString());
+
+    prefs.setDouble('lastIrrigationTemperature', this.last_irrigation_temperature);
+    prefs.setDouble('lastIrrigationAirHumidity', this.last_irrigation_air_humidity);
+    prefs.setDouble('lastIrrigationSoilMoisture', this.last_irrigation_soil_moisture);
+    prefs.setString('lastIrrigationStart', this.last_irrigation_start.toString());
+
     var lastReadingTemperature = lastReading['temperature'] != null
         ? lastReading['temperature']['degrees']
         : prefs.getDouble('lastReadingTemperature');
