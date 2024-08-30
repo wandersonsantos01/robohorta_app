@@ -37,7 +37,7 @@ Future getData() async {
   } else if (dotenv.env['get_data_on'] == 'api') {
     try {
       var headers = {
-        'tk': dotenv.env['api_token']
+        'tk': dotenv.env['api_token']!
       };
 
       // LAST READING
