@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'get_data.dart';
+import 'processes.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -369,11 +370,22 @@ class _MyHomePageState extends State<MyHomePage> {
           )],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: initState,
-        tooltip: 'Update',
-        child: Icon(Icons.update),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end, // Aligns buttons to the right
+        children: [
+          FloatingActionButton(
+            onPressed: initState,
+            tooltip: 'Update',
+            child: Icon(Icons.update),
+          ),
+          SizedBox(width: 10.0), // Adds a small spacing between buttons
+          FloatingActionButton(
+            onPressed: irrigate,
+            tooltip: 'Irrigate',
+            child: Icon(Icons.invert_colors), // You can change the icon here
+          ),
+        ],
+      ),
     );
   }
 }
