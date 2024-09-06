@@ -1,31 +1,37 @@
-import 'package:mongo_dart/mongo_dart.dart';
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-irrigate() async {
+Future<bool> irrigate() async {
   var res = true;
-  var headers = {
-    'token': dotenv.env['rh_token']!
-  };
+  try {
+    var headers = {
+      'tk': dotenv.env['api_token']!
+    };
 
-  // LAST READING
-  var url = dotenv.env['rh_url']! + ":" + dotenv.env['rh_port']! + dotenv.env['rh_irrigate_uri']!;
-  var requestIrrigate = http.Request('POST', Uri.parse(url));
+    var url = dotenv.env['api_url']! + dotenv.env['api_p_irrigate_uri']!;
+    var requestIrrigate = http.Request('POST', Uri.parse(url));
 
-  requestIrrigate.headers.addAll(headers);
+    requestIrrigate.headers.addAll(headers);
 
-  http.StreamedResponse responseLastReading = await requestIrrigate
-      .send();
+    http.StreamedResponse responseIrrigate = await requestIrrigate
+        .send();
 
-  if (responseLastReading.statusCode == 200) {
-    var lastReadingResponse = await responseLastReading.stream
-        .bytesToString();
-  }
-  else {
+    if (responseIrrigate.statusCode == 200) {
+      var lastReadingResponse = await responseIrrigate.stream
+          .bytesToString();
+    }
+    else {
+      res = false;
+      print(responseIrrigate.reasonPhrase);
+    }
+
+  } on SocketException {
+    // print('SocketException');
     res = false;
-    print(responseLastReading.reasonPhrase);
+  } on Error catch (e) {
+    // print('Error: $e');
+    res = false;
   }
-
   return res;
 }
