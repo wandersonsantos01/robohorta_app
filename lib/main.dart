@@ -78,6 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void doIrrigate() {
+    _irrigate().then((result) {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+    });
+  }
+
   _incrementCounter() {
     setState(() async {
       // This call to setState tells the Flutter framework that something has
@@ -94,6 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
     setLoading();
     var data = await getData();
     return data;
+  }
+
+  _irrigate() async {
+    setLoading();
+    irrigate();
+    await Future.delayed(Duration(seconds: 2));
   }
 
   void setLoading() {
@@ -380,7 +392,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           SizedBox(width: 10.0), // Adds a small spacing between buttons
           FloatingActionButton(
-            onPressed: irrigate,
+            onPressed: doIrrigate,
             tooltip: 'Irrigate',
             child: Icon(Icons.invert_colors), // You can change the icon here
           ),
